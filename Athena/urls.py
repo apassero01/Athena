@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('DocumentManager.urls'))
+    path('kbItems/', include('kbItems.urls'))
 ]

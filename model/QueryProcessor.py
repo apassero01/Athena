@@ -1,4 +1,4 @@
-import VectorManager as vm
+import model.VectorManager as vm
 
 class QuertyProcessor: 
     def __init__(self): 

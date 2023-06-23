@@ -1,6 +1,6 @@
-import InputProcessor
-import QueryProcessor
-import VectorManager
+import model.InputProcessor as InputProcessor
+import model.QueryProcessor as QueryProcessor 
+import model.VectorManager as VectorManager
 import os 
 import pickle 
 
@@ -33,7 +33,7 @@ class Client:
         matchedDocs = self.queryProcessor.findResources(query,self.index)
         # for doc in matchedDocs: 
         #     print(doc.page_content)
-        print(matchedDocs[0].metadata)
+        print(matchedDocs[0].text)
 
 
 def main(): 
@@ -48,10 +48,11 @@ def main():
     urls = ["https://twitter.com/greg_price11/status/1665792769472823299","https://twitter.com/taxcredithunter/status/1667955089829445632?s=20",
             "https://twitter.com/historyinmemes/status/1667972857626865668?s=20","https://twitter.com/BleacherReport/status/1668047841997230080?s=20",
             "https://www.instagram.com/reel/CrXgAazgKJ0/","https://www.instagram.com/reel/CtPit6CsH6F/?igshid=ZjUwM2YwMzA3MA%3D%3D",
-            "https://www.instagram.com/reel/Cq_396XM1tv/?igshid=ZjUwM2YwMzA3MA%3D%3D","https://www.instagram.com/reel/Cq3ZENVugK9/?igshid=ZjUwM2YwMzA3MA%3D%3D"]
+            "https://www.instagram.com/reel/Cq_396XM1tv/?igshid=ZjUwM2YwMzA3MA%3D%3D","https://www.instagram.com/reel/Cq3ZENVugK9/?igshid=ZjUwM2YwMzA3MA%3D%3D",
+            "https://www.active.com/fitness/articles/10-weightlifting-exercises-for-beginners"]
     for url in urls:
         client.addURI(url)
-    client.queryDocuments("security tackled a guy after a goolfer won a tournament")
+    client.queryDocuments("how to lift ")
     saveClient(client=client)
 
 
@@ -61,4 +62,4 @@ def loadClient():
 def saveClient(client):
     pickle.dump(client,open("testUserData.pkl","wb"))
 
-main()
+# main()
