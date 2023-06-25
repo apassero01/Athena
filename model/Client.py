@@ -33,7 +33,7 @@ class Client:
         matchedDocs = self.queryProcessor.findResources(query,self.index)
         # for doc in matchedDocs: 
         #     print(doc.page_content)
-        print(matchedDocs[0].text)
+        return matchedDocs
 
 
 def main(): 
