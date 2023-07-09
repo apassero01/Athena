@@ -5,6 +5,7 @@ import time
 from langchain.document_loaders.image import UnstructuredImageLoader
 from django.db import models
 from .VectorEngine import VectorEngine
+import os
 
 
 
@@ -55,6 +56,7 @@ class ImageKBItem(KBItem):
 
         loader = UnstructuredImageLoader("screen_shot.png")
         data = loader.load() 
+        os.remove("screen_shot.png")
 
         for ele in data: 
             self.itemContent = self.itemContent + " " + ele.page_content   
