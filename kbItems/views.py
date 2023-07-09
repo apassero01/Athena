@@ -1,14 +1,21 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-import model.Client as Client
+from .models.KBitem import KBItem, TextKBItem, ImageKBItem
 
 def kbItems(request):
     return render(request, 'kbItemsHome.html')
+
+
 def addKBItem(request): 
     if request.method == 'POST': 
         userInput = request.POST.get('urlInput')
-        client = Client.Client("example1")
-        client.addURI(str(userInput))
+
+        kbItem = ImageKBItem(URI = userInput)
+        kbItem.parseURI()
+        kbItem.save()
+
+        kbItem.createVector()
+
         response = userInput
         return JsonResponse({'response': response})
     return render(request, 'addDocument.html')

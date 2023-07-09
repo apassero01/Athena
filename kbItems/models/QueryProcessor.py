@@ -1,8 +1,8 @@
-import model.VectorManager as vm
+from .VectorManager import VectorManager as vm
 
-class QuertyProcessor: 
+class QueryProcessor: 
     def __init__(self): 
-        self.vectorManager = vm.VectorMangager()
+        self.vectorManager = vm.VectorManager()
 
     def findResources(self,query,index): 
         matchedDocs = self.vectorManager.queryDocs(index,query)

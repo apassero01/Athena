@@ -4,35 +4,46 @@ from selenium.webdriver.common.by import By
 import time
 from langchain.document_loaders.image import UnstructuredImageLoader
 from django.db import models
+from .VectorEngine import VectorEngine
+
 
 
 class KBItem(models.Model):
     URI = models.CharField(max_length = 500) 
     userTags = models.CharField()
-    def __init__(self,URI, userTags = ""): 
-        self.URI = URI; 
-        self.userTags = userTags
-        self.itemContent = ""
-        
+    itemContent = models.TextField(default="")
+    vectorEngine = VectorEngine()
 
+        
+    def parseURI(self): 
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(options = chrome_options)
         self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'})
 
+    
+    def addURI(self,URI, userTags = ""): 
+        self.URI = URI; 
+        self.userTags = userTags
+        self.itemContent = ""
+
+    
+    def addUserTags(self,userTags): 
+        self.userTags = userTags
+    
+    def createVector(self): 
+        self.vectorEngine = VectorEngine() 
+
+        documents = self.vectorEngine.TextToDocs(self.itemContent,self.id)
         
-    
-    def parseURI(): 
-        pass
-    
+        self.vectorEngine.storeVector(documents)
 
 
 
 class ImageKBItem(KBItem): 
-    def __init__(self,URI, userTags = ""):
-        super().__init__(URI, userTags = "")
     
     def parseURI(self):
+        super().parseURI()
         self.driver.set_window_size(1920, 1080)
         self.driver.get(self.URI)
         
@@ -50,10 +61,9 @@ class ImageKBItem(KBItem):
 
         
 class TextKBItem(KBItem): 
-    def __init__(self,URI, userTags = ""):
-        super().__init__(URI, userTags = "") 
     
     def parseURI(self): 
+        super().parseURI()
         self.driver.get(self.URI)
         elements = [] 
         allTags = ["p", "h", "title"]
@@ -65,7 +75,7 @@ class TextKBItem(KBItem):
         self.driver.close()
         self.driver.quit()
 
-url = "https://twitter.com/Travis_in_Flint/status/1674890906372132864?s=20"
-textTest = ImageKBItem(url)
-textTest.parseURI()
-print(textTest.itemContent)
+# url = "https://twitter.com/Travis_in_Flint/status/1674890906372132864?s=20"
+# textTest = ImageKBItem()
+# textTest.addURI(url)
+# textTest.parseURI()

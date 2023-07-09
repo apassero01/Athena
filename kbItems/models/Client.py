@@ -1,14 +1,14 @@
-import model.InputProcessor as InputProcessor
-import model.QueryProcessor as QueryProcessor 
-import model.VectorManager as VectorManager
+from .InputProcessor import InputProcessor
+from .QueryProcessor import QueryProcessor 
+from .VectorManager import VectorManager
 import os 
 import pickle 
 
 class Client: 
     def __init__(self,index): 
         self.inputProcessor = None
-        self.vectorManager = VectorManager.VectorMangager() 
-        self.queryProcessor = QueryProcessor.QuertyProcessor() 
+        self.vectorManager = VectorManager() 
+        self.queryProcessor = QueryProcessor() 
         self.AllURIs = []
 
         self.index = index 

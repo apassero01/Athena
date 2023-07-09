@@ -7,7 +7,7 @@ import openai
 import pinecone
 from langchain.vectorstores import Pinecone
 
-class VectorMangager(): 
+class VectorManager(): 
     def __init__(self): 
         dotenv.load_dotenv()
         pinecone.init(
