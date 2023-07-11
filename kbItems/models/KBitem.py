@@ -13,6 +13,7 @@ class KBItem(models.Model):
     URI = models.CharField(max_length = 500) 
     userTags = models.CharField()
     itemContent = models.TextField(default="")
+    userID = models.IntegerField()
     vectorEngine = VectorEngine()
 
         
