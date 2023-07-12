@@ -48,6 +48,16 @@
       margin-top: 20px;
     }
 
+    .response-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .response-item-info {
+      margin-left: 10px;
+    }
+
     .response-url {
       color: #4285f4;
       text-decoration: underline;
@@ -55,24 +65,25 @@
   </style>
 </head>
 <body>
-  <h1>Add a new Document to your database</h1>
+  <h1>Query a document</h1>
   <div style="max-width: 600px; margin: 0 auto;">
+    <form action="" method="POST">
+      {% csrf_token %}
+      <input type="text" name="urlInput" placeholder="Query a document" {% if submitted %}value=""{% endif %}>
+      <button type="submit">Submit</button>
+    </form>
     {% if submitted %}
       <div id="response" class="response-list">
         {% if response %}
-          <ul>
-            {% for url in response %}
-              <li><a class="response-url" href="{{ url }}" target="_blank">{{ url }}</a></li>
-            {% endfor %}
-          </ul>
+          {% for item in response %}
+            <div class="response-item">
+              <a class="response-url" href="{{ item.0 }}" target="_blank">{{ item.0 }}</a>
+              <div class="response-item-info">{{ item.1 }}</div>
+            </div>
+          {% endfor %}
         {% endif %}
       </div>
     {% endif %}
-    <form action="" method="POST">
-      {% csrf_token %}
-      <input type="text" name="urlInput" placeholder="Add a new Document to your database" {% if submitted %}value=""{% endif %}>
-      <button type="submit">Submit</button>
-    </form>
   </div>
 </body>
 </html>

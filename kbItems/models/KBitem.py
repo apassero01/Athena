@@ -10,6 +10,7 @@ import os
 
 
 class KBItem(models.Model):
+    
     URI = models.CharField(max_length = 500) 
     userTags = models.CharField()
     itemContent = models.TextField(default="")
@@ -18,6 +19,7 @@ class KBItem(models.Model):
 
         
     def parseURI(self): 
+        self.userID = 1
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(options = chrome_options)
@@ -49,18 +51,19 @@ class ImageKBItem(KBItem):
         self.driver.set_window_size(1920, 1080)
         self.driver.get(self.URI)
         
-        time.sleep(3)
-        self.driver.save_screenshot('screen_shot.png')
+        time.sleep(5)
+        self.driver.save_screenshot('screen_shot2.png')
 
         self.driver.close()
         self.driver.quit()
 
-        loader = UnstructuredImageLoader("screen_shot.png")
+        loader = UnstructuredImageLoader("screen_shot2.png")
         data = loader.load() 
-        os.remove("screen_shot.png")
+        # os.remove("screen_shot.png")
 
         for ele in data: 
             self.itemContent = self.itemContent + " " + ele.page_content   
+        print(self.itemContent)
 
         
 class TextKBItem(KBItem): 

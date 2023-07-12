@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models.KBitem import KBItem, TextKBItem, ImageKBItem
+from .models.Query import Query
 
 def kbItems(request):
     return render(request, 'kbItemsHome.html')
@@ -16,18 +17,19 @@ def addKBItem(request):
 
         kbItem.createVector()
 
-        response = userInput
-        return JsonResponse({'response': response})
+        response = [userInput]
+        return render(request, 'addDocument.html', {'response': response, 'submitted': True})
     return render(request, 'addDocument.html')
 
 def queryItems(request): 
     if request.method == 'POST':
         userInput = request.POST.get('urlInput')
-        client = Client.Client("example1")
-        matchedDocs = client.queryDocuments(userInput)
-        closestMatches = [docs.metadata['uri'] for docs in matchedDocs]
+        
+        query = Query(userInput)
+        sortedKbItems = query.getMatchedDocs()
+        closestMatches = [ (docs[0].URI,docs[1]) for docs in sortedKbItems]
         # client.vectorManager.emptyIndex("example1")
-        return JsonResponse({'response': closestMatches})
+        return render(request, 'QueryDocuments.html', {'response': closestMatches, 'submitted': True})
     
 
-    return render(request, 'queryDocument.html')
+    return render(request, 'QueryDocuments.html')

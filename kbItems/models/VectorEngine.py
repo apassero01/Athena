@@ -40,4 +40,13 @@ class VectorEngine():
         vectorIDs = self.vectorDatabase.add_documents(documents=documents)
         return vectorIDs
     
+    def getMatchedDocs(self, queryString): 
+        matched_docs = self.vectorDatabase.similarity_search_with_score(queryString)
 
+        kbItemIDs = {}
+        for doc in matched_docs: 
+            kbItemID = doc[0].metadata['kbItemID']
+            if kbItemID not in kbItemIDs: 
+                kbItemIDs[kbItemID] = doc[1]
+        
+        return kbItemIDs
