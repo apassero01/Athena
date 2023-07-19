@@ -35,12 +35,10 @@ class KBItem(models.Model):
     def addUserTags(self,userTags): 
         self.userTags = userTags
     
-    def createVector(self): 
-        self.vectorEngine = VectorEngine() 
-
+    def createVector(self, chunk_size = 100):  
         documents = self.vectorEngine.TextToDocs(self.itemContent,self.id)
         
-        self.vectorEngine.storeVector(documents)
+        self.vectorEngine.storeVector(documents, chunk_size=chunk_size)
 
 
 
@@ -71,17 +69,23 @@ class TextKBItem(KBItem):
     def parseURI(self): 
         super().parseURI()
         self.driver.get(self.URI)
-        elements = [] 
-        allTags = ["p", "h", "title"]
-        for tag in allTags: 
-            elements += self.driver.find_elements(By.TAG_NAME,tag)
-            for e in elements:
-                self.itemContent = self.itemContent + e.text + "\n"
+        time.sleep(3)
 
-        self.driver.close()
+        try: 
+            alert = self.driver.switch_to.alert
+            alert.dismiss() 
+        except: 
+            pass 
+
+        # Get all 'p' and heading tags
+        tags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+        for tag in tags:
+            elements = self.driver.find_elements(By.TAG_NAME, tag)
+            for element in elements:
+                self.itemContent += element.text + "\n"
+
+        print(self.itemContent)
+
         self.driver.quit()
 
-# url = "https://twitter.com/Travis_in_Flint/status/1674890906372132864?s=20"
-# textTest = ImageKBItem()
-# textTest.addURI(url)
-# textTest.parseURI()
+#Command to remove embedding from table by kbItemID DELETE FROM langchain_pg_embedding WHERE cmetadata::jsonb @> '{"kbItemID": 37}'::jsonb;

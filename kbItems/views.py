@@ -11,12 +11,15 @@ def addKBItem(request):
     if request.method == 'POST': 
         userInput = request.POST.get('urlInput')
 
-        kbItem = ImageKBItem(URI = userInput)
+        if 'instagram' in userInput or 'twitter' in userInput: 
+            kbItem = ImageKBItem(URI = userInput)
+        else: 
+            kbItem = TextKBItem(URI = userInput)
+
         kbItem.parseURI()
         kbItem.save()
-
         kbItem.createVector()
-
+        print("allgood")
         response = [userInput]
         return render(request, 'addDocument.html', {'response': response, 'submitted': True})
     return render(request, 'addDocument.html')

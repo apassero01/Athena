@@ -6,9 +6,11 @@ from langchain.docstore.document import Document
 import os
 
 class VectorEngine(): 
-    def __init__(self): 
+    def __init__(self, vectorCollectionName = "KBitem" ): 
         load_dotenv()
         self.embeddings = OpenAIEmbeddings()
+
+        self.vectorCollectionName = vectorCollectionName
 
         self.CONNECTION_STRING = PGVector.connection_string_from_db_params(
             driver=os.environ.get("PGVECTOR_DRIVER", "psycopg2"),
@@ -20,7 +22,7 @@ class VectorEngine():
         )
 
         self.vectorDatabase = PGVector(
-            collection_name="KBitem",
+            collection_name=self.vectorCollectionName,
             connection_string=self.CONNECTION_STRING,
             embedding_function=self.embeddings,
         )
@@ -33,16 +35,15 @@ class VectorEngine():
         return document
     
 
-    def storeVector(self, documents): 
-        textSplitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap=0)
+    def storeVector(self, documents, chunk_size = 100): 
+        textSplitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap=0)
         documents = textSplitter.split_documents(documents=[documents])
 
         vectorIDs = self.vectorDatabase.add_documents(documents=documents)
         return vectorIDs
     
     def getMatchedDocs(self, queryString): 
-        matched_docs = self.vectorDatabase.similarity_search_with_score(queryString)
-
+        matched_docs = self.vectorDatabase.similarity_search_with_score(queryString, k = 50)
         kbItemIDs = {}
         for doc in matched_docs: 
             kbItemID = doc[0].metadata['kbItemID']

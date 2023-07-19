@@ -8,7 +8,6 @@ class Query:
 
     
     def getMatchedDocs(self): 
-        self.vectorEngine = VectorEngine()
         kbItemIDs = self.vectorEngine.getMatchedDocs(queryString=self.queryString)
 
         kbItemsScore = [] 
