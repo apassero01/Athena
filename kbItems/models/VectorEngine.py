@@ -38,7 +38,11 @@ class VectorEngine():
     def storeVector(self, documents, chunk_size = 100): 
         textSplitter = RecursiveCharacterTextSplitter(chunk_size = chunk_size, chunk_overlap=0)
         documents = textSplitter.split_documents(documents=[documents])
+        longDocuments = [d for d in documents if len(d.page_content) > 50]
 
+        if len(longDocuments) > 1: 
+            documents = longDocuments
+            
         vectorIDs = self.vectorDatabase.add_documents(documents=documents)
         return vectorIDs
     
