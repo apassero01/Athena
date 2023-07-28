@@ -5,6 +5,7 @@ import time
 from langchain.document_loaders.image import UnstructuredImageLoader
 from django.db import models
 from .VectorEngine import VectorEngine
+from .Agent import Agent
 import os
 
 
@@ -16,6 +17,7 @@ class KBItem(models.Model):
     itemContent = models.TextField(default="")
     userID = models.IntegerField()
     vectorEngine = VectorEngine()
+    agent = Agent() 
 
         
     def parseURI(self): 
@@ -25,18 +27,23 @@ class KBItem(models.Model):
         self.driver = webdriver.Chrome(options = chrome_options)
         self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'})
 
+    def deployContentAgent(self): 
+        self.userTags += self.agent.createItemTags(self.itemContent)
     
     def addURI(self,URI, userTags = ""): 
         self.URI = URI; 
         self.userTags = userTags
         self.itemContent = ""
 
+
     
     def addUserTags(self,userTags): 
         self.userTags = userTags
     
+    
     def createVector(self, chunk_size = 100):  
-        documents = self.vectorEngine.TextToDocs(self.itemContent,self.id)
+        
+        documents = self.vectorEngine.TextToDocs(text = self.itemContent,kbItemID=self.id)
         
         self.vectorEngine.storeVector(documents, chunk_size=chunk_size)
 
@@ -57,11 +64,14 @@ class ImageKBItem(KBItem):
 
         loader = UnstructuredImageLoader("screen_shot2.png")
         data = loader.load() 
-        # os.remove("screen_shot.png")
+        os.remove("screen_shot2.png")
 
         for ele in data: 
             self.itemContent = self.itemContent + " " + ele.page_content   
-        print(self.itemContent)
+    
+    def deployContentAgent(self):
+        self.itemContent = self.agent.trimItemContent(self.itemContent)
+        super().deployContentAgent()
 
         
 class TextKBItem(KBItem): 
