@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models.KBitem import KBItem, TextKBItem, ImageKBItem
 from .models.Query import Query
+from .thread import KBItemBackground
 
 def kbItems(request):
     return render(request, 'kbItemsHome.html')
@@ -16,10 +17,7 @@ def addKBItem(request):
         else: 
             kbItem = TextKBItem(URI = userInput)
 
-        kbItem.parseURI()
-        kbItem.save()
-        kbItem.createVector()
-        print("allgood")
+        KBItemBackground(kbItem).start()
         response = [userInput]
         return render(request, 'addDocument.html', {'response': response, 'submitted': True})
     return render(request, 'addDocument.html')

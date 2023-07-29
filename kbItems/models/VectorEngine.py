@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from django.db import transaction
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores.pgvector import PGVector
@@ -42,8 +43,9 @@ class VectorEngine():
 
         if len(longDocuments) > 1: 
             documents = longDocuments
-            
-        vectorIDs = self.vectorDatabase.add_documents(documents=documents)
+
+        with transaction.atomic():   
+            vectorIDs = self.vectorDatabase.add_documents(documents=documents)
         return vectorIDs
     
     def getMatchedDocs(self, queryString): 

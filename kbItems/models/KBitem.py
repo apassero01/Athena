@@ -57,14 +57,17 @@ class ImageKBItem(KBItem):
         self.driver.get(self.URI)
         
         time.sleep(5)
-        self.driver.save_screenshot('screen_shot2.png')
+
+        ssFile = "screen_shot" + str(self.id)+".png"
+        self.driver.save_screenshot(ssFile)
 
         self.driver.close()
         self.driver.quit()
 
-        loader = UnstructuredImageLoader("screen_shot2.png")
+        loader = UnstructuredImageLoader(ssFile)
         data = loader.load() 
-        os.remove("screen_shot2.png")
+
+        os.remove(ssFile)
 
         for ele in data: 
             self.itemContent = self.itemContent + " " + ele.page_content   

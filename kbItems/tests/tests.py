@@ -259,7 +259,6 @@ class QueryPerformanceTest(TestCase):
         '''
         Hand created queries for each URL in the kbItems test set
         '''
-        print("DSSDSDSD")
         self.allURIs = []
         
         URI = "https://twitter.com/edkrassen/status/1679971231280365568?s=12&t=luE0t2rXCmHkF-x3pwIZ9g"
