@@ -1,0 +1,11 @@
+{% extends 'kbItems/base.html' %}
+{% block title %}Login{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}{{form|crispy}}
+    <p> Already have an account? Login <a href="/login">Here</a></p>
+    <button type = "subtmit" class="btn btn-success">Register</button>
+</form>
+{% endblock %}
+    

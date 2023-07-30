@@ -1,0 +1,70 @@
+{% extends "kbItems/base.html" %}
+
+{% block title %}
+Add Item to Personal Database
+{% endblock %}
+
+{% block content %}
+  <style>
+    .custom-form h1 {
+      color: #343a40; /* Bootstrap's dark grey */
+      text-align: center;
+      margin-top: 40px; /* provide some space from the navbar */
+      margin-bottom: 30px; /* provide some space from the form */
+    }
+
+    .custom-form form, .custom-form .response-container {
+      display: flex;
+      flex-direction: column; /* make the form inputs stack vertically */
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .custom-form input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #343a40;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+
+    .custom-form button[type="submit"] {
+      width: 80%;
+      padding: 10px;
+      background-color: #343a40; /* Bootstrap's dark grey */
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .custom-form ul {
+      list-style: none;
+      width: 80%;
+    }
+  </style>
+
+  <div class="custom-form">
+    <h1>Add a new Document to your database</h1>
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="text" name="urlInput" placeholder="Add a new Document to your database" {% if submitted %}value=""{% endif %}>
+        <button type="submit">Submit</button>
+      </form>
+      {% if submitted %}
+        <div class="response-container">
+          <div id="response" class="response-list">
+            {% if response %}
+              <ul>
+                {% for url in response %}
+                  <li><a class="response-url" href="{{ url }}" target="_blank">{{ url }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
