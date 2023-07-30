@@ -7,11 +7,11 @@ To clone:
 5. In postgres database to be used to run application enable PGVector extension : 'CREATE EXTENSION vector;'
 
 Create .env file in top level directory with following content: 
-OPENAI_API_KEY="" #your own OpenAI api key 
+OPENAI_API_KEY="" #your own OpenAI api key \
 
-PGVECTOR_DRIVER="" #connection to postgres database with PGVector installed 
-PGVECTOR_HOST=""
-PGVECTOR_PORT=""
-PGVECTOR_DATABASE=""
-PGVECTOR_USER=""
+PGVECTOR_DRIVER="" #connection to postgres database with PGVector installed \
+PGVECTOR_HOST=""\
+PGVECTOR_PORT=""\
+PGVECTOR_DATABASE=""\
+PGVECTOR_USER=""\
 PGVECTOR_PASSWORD=""
