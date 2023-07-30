@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views 
 urlpatterns = [
-    path('', views.kbItems, name = 'kbItems'),
-    path('new/',views.addKBItem, name = 'addKBItem'),
-    path('search/', views.queryItems, name = 'queryItems')
+    path('', views.home, name = 'home'),
+    path('home/', views.home, name = 'home'),
+    path('sign-up',views.sign_up, name = 'sign_up'),
+    path('kbItems/new/',views.addKBItem, name = 'addKBItem'),
+    path('kbItems/search/', views.queryItems, name = 'queryItems')
 ]

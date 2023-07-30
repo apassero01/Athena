@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(pattern_name='kbItems', permanent=False)),
     path('admin/', admin.site.urls),
-    path('kbItems/', include('kbItems.urls'))
+    path('', include('kbItems.urls')),
+    path('', include('django.contrib.auth.urls'))
 ]

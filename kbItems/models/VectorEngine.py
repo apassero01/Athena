@@ -30,8 +30,8 @@ class VectorEngine():
 
 
     
-    def TextToDocs(self, text, kbItemID): 
-        metadata = {"kbItemID": kbItemID}
+    def TextToDocs(self, text, kbItemID, userID): 
+        metadata = {"kbItemID": kbItemID,"userID": userID}
         document = Document(page_content=text, metadata=metadata)
         return document
     
@@ -48,8 +48,8 @@ class VectorEngine():
             vectorIDs = self.vectorDatabase.add_documents(documents=documents)
         return vectorIDs
     
-    def getMatchedDocs(self, queryString): 
-        matched_docs = self.vectorDatabase.similarity_search_with_score(queryString, k = 50)
+    def getMatchedDocs(self, queryString,userID): 
+        matched_docs = self.vectorDatabase.similarity_search_with_score(queryString, k = 50,filter={"userID":userID})
         kbItemIDs = {}
         for doc in matched_docs: 
             kbItemID = doc[0].metadata['kbItemID']

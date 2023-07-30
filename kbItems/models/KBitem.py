@@ -21,7 +21,6 @@ class KBItem(models.Model):
 
         
     def parseURI(self): 
-        self.userID = 1
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(options = chrome_options)
@@ -43,7 +42,7 @@ class KBItem(models.Model):
     
     def createVector(self, chunk_size = 100):  
         
-        documents = self.vectorEngine.TextToDocs(text = self.itemContent,kbItemID=self.id)
+        documents = self.vectorEngine.TextToDocs(text = self.itemContent,kbItemID=self.id,userID=self.userID)
         
         self.vectorEngine.storeVector(documents, chunk_size=chunk_size)
 

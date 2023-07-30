@@ -15,7 +15,6 @@ class KBItemBackground(threading.Thread):
             print(e)
 
     def createItem(self): 
-        self.kbItem.userID = 1
         self.kbItem.save() 
         self.kbItem.parseURI()
         self.kbItem.save() 

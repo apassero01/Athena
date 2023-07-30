@@ -2,13 +2,14 @@ from .VectorEngine import VectorEngine
 from .KBitem import KBItem, TextKBItem, ImageKBItem
 
 class Query: 
-    def __init__(self, queryString): 
+    def __init__(self, queryString,userID): 
         self.vectorEngine = VectorEngine()
         self.queryString = queryString 
+        self.userID = userID
 
     
     def getMatchedDocs(self): 
-        kbItemIDs = self.vectorEngine.getMatchedDocs(queryString=self.queryString)
+        kbItemIDs = self.vectorEngine.getMatchedDocs(queryString=self.queryString,userID=self.userID)
 
         kbItemsScore = [] 
         for ID in kbItemIDs: 
