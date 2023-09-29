@@ -27,7 +27,7 @@ Throughout the project, I found this solution effectively managed resources and 
 - 💾 Utilized **Django** for backend development.
 - 🔗 Integrated **LangChain** for interactions with Large Language Models.
 - 🗃️ Chose **PGVector** for storing LLM text vectors, enabling similarity searches.
-- 🛠️ Created a testing infrastructure to subjectively evaluate performance, ensuring trackable progress over time.
+- 🛠️ Created testing infrastructure to evaluate subjective performance, ensuring trackable progress over time.
 - 📋 Managed the project and collaborated using **Trello**.
 
 
