@@ -11,6 +11,14 @@ import os
 
 
 class KBItem(models.Model):
+    '''
+    Parent KBItem class to encapsulate data related to a "knowledge base item"
+    URI - URI of website or document 
+    userTags - User generated tags associated with the item
+    UserID - UserID that owns this KBItem
+    vectorEngine - object used to interact with the vector database 
+    agent - Agent object to interact with LLM 
+    '''
     
     URI = models.CharField(max_length = 500) 
     userTags = models.CharField()
@@ -21,12 +29,19 @@ class KBItem(models.Model):
 
         
     def parseURI(self): 
+        '''
+        Parent implementation of ParseURI instantiates the web driver to connect to a web URL. Will be overriden for specific
+        scraping method and if the KBItem is not web based.
+        '''
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.driver = webdriver.Chrome(options = chrome_options)
         self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'})
 
     def deployContentAgent(self): 
+        '''
+        Method to deploy the Agent to generate additional content related to the document
+        '''
         self.userTags += self.agent.createItemTags(self.itemContent)
     
     def addURI(self,URI, userTags = ""): 
@@ -36,11 +51,17 @@ class KBItem(models.Model):
 
 
     
-    def addUserTags(self,userTags): 
+    def addUserTags(self,userTags):
+        '''
+        Set user tags method
+        ''' 
         self.userTags = userTags
     
     
     def createVector(self, chunk_size = 100):  
+        '''
+        Method to call vectorEngine to convert text to embeddings and store in the vector database
+        '''
         
         documents = self.vectorEngine.TextToDocs(text = self.itemContent,kbItemID=self.id,userID=self.userID)
         
