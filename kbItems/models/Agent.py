@@ -3,6 +3,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.chains import LLMChain
 import os
+import re
 from dotenv import load_dotenv
 
 
@@ -15,8 +16,8 @@ class Agent:
         Load environment varaibles including API key for LLM. Currently using ChatGPT but can change
         '''
         load_dotenv() 
-        # self.llm = ChatOpenAI(model_name = 'text-davinci-003')
-        self.llm = OpenAI()
+        self.llm = ChatOpenAI(model_name = 'gpt-4')
+        # self.llm = OpenAI(model_name='gpt-4')
     
     def trimItemContent(self,itemContent): 
         '''
@@ -44,6 +45,35 @@ class Agent:
         CreateTagChain = LLMChain(llm=self.llm, prompt = CreateItemTagPrompt)
         tags = CreateTagChain.run(itemContent)
         return tags 
+    
+    def generateTitleAndSource(self,itemContent,URI): 
+        '''
+        Prompt template taking text input and generating a title for the document
+        '''
+        if len(itemContent) > 1250: 
+            itemContent = itemContent[0:1250] 
+        GenerateTitlePrompt = PromptTemplate(
+        input_variables = ["text_input"],
+        template = "Generate a title relevant to the item content only and give the source of this item such as the platform or website: ie Instangram. Put the response and platform together inside [] and separate the two by '::' Input: {text_input} " 
+        )
+
+        prompt = "URL: " + URI + "\n" + "Content: " + itemContent
+        GenerateTitleChain = LLMChain(llm=self.llm, prompt = GenerateTitlePrompt)
+        response = GenerateTitleChain.run(prompt)
+
+        match = re.search(r'\[(.*?)\]', response)
+
+        if match:
+            response = match.group(1)
+        else:
+            response = response
+
+        response = response.replace('"','')
+        title = response.split("::")[0]
+        source = response.split("::")[1]
+        print("title: " +  title + " source: " + source)
+        return title,source
+
         
     
 

@@ -46,6 +46,7 @@ Search From Personal Database
       border-radius: 4px;
       padding: 10px;
       margin-bottom: 15px;
+      position: relative;
     }
 
     .response-url {
@@ -57,26 +58,44 @@ Search From Personal Database
       border-radius: 4px;
       padding: 5px;
     }
+    .link-anchor {
+      position: absolute;
+      right: 10px;  /* Positioning the "Link" word 10px from the right edge */
+      font-size: 16px;
+      color: #007BFF;
+      text-decoration: underline;
+    }
   </style>
 
-  <h1>Find Relevant Documents</h1>
+  <h1>Search for a Saved Item</h1>
   <div class="container" style="max-width: 800px; margin: 0 auto;"> <!-- increase the max-width of the container -->
     <form action="" method="POST">
       {% csrf_token %}
-      <input type="text" name="urlInput" placeholder="Enter context to find saved document" {% if submitted %}value=""{% endif %}>
+      <input type="text" name="urlInput" placeholder="Enter context to find saved document" value="{{ request.POST.urlInput|default:'' }}">
       <button type="submit">Submit</button>
     </form>
-    {% if submitted %}
-      <div class="response-container">
-        {% if response %}
-          {% for item in response %}
-            <div class="response-item">
-              <a class="response-url" href="{{ item.0 }}" target="_blank">{{ item.0 }}</a>
-              <div class="response-item-info" style="background-color: {{ item.2 }};">{{ item.1|floatformat:2 }}</div>
-            </div>
-          {% endfor %}
-        {% endif %}
-      </div>
+{% if submitted %}
+  <div class="response-container">
+    {% if response %}
+      {% for item in response %}
+        <div class="response-item" style="background-color: {{ item.2 }}; display: flex; justify-content: space-between; align-items: center; padding: 5px 15px;">
+          <!-- Div containing Rank and SourceName: Title -->
+          <div style="display: flex; align-items: center; flex-grow: 1; margin-right: 20px;">
+            <!-- Display the rank -->
+            <span style="font-size: 16px; margin-right: 10px;">{{ forloop.counter }}</span>
+          
+            <!-- Display 'SourceName: Title' -->
+            <span style="font-weight: bold; flex-grow: 1; margin-right: 15px;">{{ item.1 }}</span>
+          </div>
+          
+          <!-- Display a 'Link' word and hyperlink it to the URI -->
+          <a class="link-anchor" href="{{ item.0 }}" target="_blank">Link</a>
+        </div>
+      {% endfor %}
+    {% else %}
+        <p>No results found.</p>
     {% endif %}
+  </div>
+{% endif %}
   </div>
 {% endblock %}

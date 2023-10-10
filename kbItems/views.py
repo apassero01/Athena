@@ -48,17 +48,22 @@ def queryItems(request):
     if request.method == 'POST':
         userInput = request.POST.get('urlInput')
         
-        query = Query(userInput,request.user.id)
+        query = Query(userInput, request.user.id)
         sortedKbItems = query.getMatchedDocs()
 
         cmap = cm.get_cmap('RdYlGn')
         closestMatches = []
-        for i, item in enumerate(sortedKbItems):
-            color = rgb2hex(cmap((len(sortedKbItems) - i - 1) / len(sortedKbItems)))
-            closestMatches.append((item[0].URI, item[1], color))
+        for rank, (actualItem, match_score) in enumerate(sortedKbItems, start=1):
+            color = rgb2hex(cmap((len(sortedKbItems) - rank) / len(sortedKbItems)))
+            
+            URI = actualItem.URI
+            title = actualItem.title
+            sourceName = actualItem.sourceName
 
-        # client.vectorManager.emptyIndex("example1")
+            displayText = f"{sourceName}: {title}"
+            
+            closestMatches.append((URI, displayText, color, match_score, rank))
+
         return render(request, 'kbItems/searchDocuments.html', {'response': closestMatches, 'submitted': True})
     
-
     return render(request, 'kbItems/searchDocuments.html')

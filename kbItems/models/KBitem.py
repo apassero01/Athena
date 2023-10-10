@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 import time
 from langchain.document_loaders.image import UnstructuredImageLoader
@@ -23,6 +24,8 @@ class KBItem(models.Model):
     URI = models.CharField(max_length = 500) 
     userTags = models.CharField()
     itemContent = models.TextField(default="")
+    title = models.TextField(default="")
+    sourceName = models.TextField(default="")
     userID = models.IntegerField()
     vectorEngine = VectorEngine()
     agent = Agent() 
@@ -35,7 +38,7 @@ class KBItem(models.Model):
         '''
         chrome_options = Options()
         chrome_options.add_argument("--headless")
-        self.driver = webdriver.Chrome(options = chrome_options)
+        self.driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=chrome_options)
         self.driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36'})
 
     def deployContentAgent(self): 
@@ -43,6 +46,12 @@ class KBItem(models.Model):
         Method to deploy the Agent to generate additional content related to the document
         '''
         self.userTags += self.agent.createItemTags(self.itemContent)
+    
+    def generateTitleAndSource(self):
+        '''
+        Method to generate title for document
+        '''
+        self.title,self.sourceName = self.agent.generateTitleAndSource(self.itemContent,self.URI)
     
     def addURI(self,URI, userTags = ""): 
         self.URI = URI; 

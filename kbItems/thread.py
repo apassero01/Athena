@@ -17,5 +17,6 @@ class KBItemBackground(threading.Thread):
     def createItem(self): 
         self.kbItem.save() 
         self.kbItem.parseURI()
+        self.kbItem.generateTitleAndSource()
         self.kbItem.save() 
         self.kbItem.createVector()
